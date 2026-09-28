@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+/* Habilita el modo oscuro basado en la clase .dark en <html> (controlado por next-themes) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --font-display: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Modo claro */
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f4f5f4;
+  --color-surface: #ffffff;
+  --color-border: #e3e5e2;
+  --color-text: #0f1210;
+  --color-text-muted: #5b625d;
+  --color-accent: #0e9f5f;
+  --color-accent-strong: #0b7f4c;
+  --color-accent-contrast: #ffffff;
+  --color-danger: #c0392b;
+  --color-brand: #2f8f2b; /* verde del logo / tagline, con contraste sobre blanco */
+}
+
+.dark {
+  /* Modo oscuro */
+  --color-bg: #0a0c0b;
+  --color-bg-subtle: #121513;
+  --color-surface: #141b17;
+  --color-border: #242b27;
+  --color-text: #f3f5f3;
+  --color-text-muted: #9aa39d;
+  --color-accent: #29d385;
+  --color-accent-strong: #4fe3a1;
+  --color-accent-contrast: #0a0c0b;
+  --color-danger: #ff6b5e;
+  --color-brand: #4caf3f;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-bg-subtle: var(--color-bg-subtle);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+  --color-accent-contrast: var(--color-accent-contrast);
+  --color-danger: var(--color-danger);
+  --color-brand: var(--color-brand);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Scrollbar sutil, coherente con la identidad minimalista */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+
+/* =========================================================
+   Panel de noticias (Inicio y /news)
+   Paleta fija (no cambia con el tema): grises + detalles azules + texto dorado.
+   ========================================================= */
+.news-panel {
+  --news-gray-900: #1e2226;
+  --news-gray-800: #272c31;
+  --news-gray-700: #343a41;
+  --news-blue-500: #4b90d9;
+  --news-blue-300: #8dbbee;
+  --news-blue-900: #1c3552;
+  --news-gold: #e4bb52;
+  --news-gold-soft: #cfb87c;
+
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 1px solid #3d4650;
+  border-top: 2px solid var(--news-blue-500);
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(75, 144, 217, 0.16), transparent 55%),
+    linear-gradient(135deg, var(--news-gray-800), var(--news-gray-900));
+  color: var(--news-gold);
+}
+
+.news-panel::before {
+  /* barra azul lateral */
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--news-blue-500), var(--news-blue-900));
+}
+
+.news-panel__link {
+  color: var(--news-blue-300);
+}
+.news-panel__link:hover {
+  color: #fff;
+}
+
+.news-item {
+  border: 1px solid #3a424b;
+  border-left: 3px solid var(--news-blue-500);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0.25rem;
+}
+
+.news-chip {
+  border: 1px solid var(--news-blue-500);
+  background: var(--news-blue-900);
+  color: var(--news-blue-300);
+}
+
+.news-date {
+  background: var(--news-blue-900);
+  border: 1px solid var(--news-blue-500);
+  color: var(--news-gold);
+}
+
+/* Carrusel del panel de noticias */
+.news-item {
+  width: 100%;
+}
+
+.news-track {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.news-track::-webkit-scrollbar {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .news-track {
+    scroll-behavior: auto;
+  }
+}
+
+/* Puntos indicadores: grises; el actual, blanco y un poco más grande */
+.news-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #6b7280;
+  transition: width 0.15s, height 0.15s, background 0.15s;
+}
+.news-dot:hover {
+  background: #9ca3af;
+}
+.news-dot--active {
+  width: 11px;
+  height: 11px;
+  background: #ffffff;
+}
+
+/* Flechas laterales: solo aparecen al pasar el cursor por el panel */
+.news-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--news-blue-500);
+  background: rgba(28, 53, 82, 0.85);
+  color: var(--news-gold);
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+.news-panel:hover .news-arrow,
+.news-arrow:focus-visible {
+  opacity: 1;
+}
+.news-arrow:hover {
+  background: var(--news-blue-500);
+  color: #fff;
+}
