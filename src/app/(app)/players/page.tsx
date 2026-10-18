@@ -18,7 +18,7 @@ const num = (v: string) => {
 
 export default async function PlayersPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   // Solo los clubes buscan jugadores.
-  if ((await getRole()) !== "club") redirect("/");
+  if ((await getRole()) !== "club") redirect("/inicio");
 
   const sp = await searchParams;
   const values = {

@@ -99,7 +99,7 @@ export async function updatePlayerProfile(
   if (error) return { error: "No pudimos guardar los cambios." };
 
   revalidatePath("/profile");
-  revalidatePath("/");
+  revalidatePath("/inicio");
   revalidatePath(`/player/${playerId}`);
   return { success: true };
 }
@@ -321,7 +321,7 @@ export async function updateAvatar(
   }
 
   revalidatePath("/profile");
-  revalidatePath("/");
+  revalidatePath("/inicio");
   revalidatePath(`/player/${playerId}`);
   return { success: true };
 }
@@ -350,7 +350,7 @@ export async function removeAvatar(playerId: string): Promise<ActionResult> {
   if (oldPath) await supabase.storage.from(AVATAR_BUCKET).remove([oldPath]);
 
   revalidatePath("/profile");
-  revalidatePath("/");
+  revalidatePath("/inicio");
   revalidatePath(`/player/${playerId}`);
   return { success: true };
 }

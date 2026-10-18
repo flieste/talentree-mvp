@@ -23,12 +23,13 @@ interfaz.
 talentree/
 ├── src/
 │   ├── app/
+│   │   ├── (landing)/          # Landing pública (ruta "/"): page.tsx + landing.css + HowItWorks.tsx
 │   │   ├── login/              # Página + Server Action de login
 │   │   ├── register/           # Página + Server Action de registro
 │   │   ├── actions/auth.ts     # Server Action de logout
 │   │   └── (app)/              # Grupo de rutas protegidas (requieren sesión)
 │   │       ├── layout.tsx      # Shell con Navbar + Sidebar
-│   │       ├── page.tsx        # Inicio (logo + frase, panel de noticias, grid de jugadores)
+│   │       ├── inicio/         # Inicio de la demo (logo + frase, noticias, grid de jugadores) -> /inicio
 │   │       ├── news/           # Noticias y eventos (listado completo)
 │   │       ├── profile/        # Mi Perfil (editable) + Server Actions
 │   │       ├── player/[id]/    # Perfil público de un jugador (solo lectura)
@@ -90,7 +91,10 @@ En el panel de Supabase, andá a **SQL Editor** y ejecutá, en este orden:
    o algún `profiles.role = 'club'` que no hayan creado ustedes — la migración
    no las borra ni las revierte automáticamente, solo cierra la puerta para
    que no se puedan crear más así de acá en adelante.
-6. El contenido de `supabase/seed.sql` (carga los 10 jugadores demo para
+6. El contenido de `supabase/migrations/0006_waitlist.sql` (tabla `waitlist` para la
+   lista de espera de la landing; solo permite insertar, nadie puede leerla desde la
+   app).
+7. El contenido de `supabase/seed.sql` (carga los 10 jugadores demo para
    que el Home no se vea vacío).
 
 ### Seguridad
@@ -122,8 +126,10 @@ contemplado: `/register` te redirige a `/login` con un aviso).
 npm run dev
 ```
 
-Abrí [http://localhost:3000](http://localhost:3000). Te va a redirigir a
-`/login`. Desde ahí podés crear una cuenta nueva.
+Abrí [http://localhost:3000](http://localhost:3000). Vas a ver la **landing
+pública** de TalenTree. Los botones "Probar la demo" / "Entrar a la demo" llevan
+a `/inicio`, que si no hay sesión te redirige a `/login` (desde ahí podés crear
+una cuenta nueva) y, con sesión, abre la demo.
 
 ### Otros comandos
 
@@ -147,7 +153,9 @@ automáticamente:
 
 El middleware (`src/proxy.ts`) refresca la sesión en cada request y
 redirige a `/login` a quien no esté autenticado e intente entrar a una ruta
-privada (todas excepto `/login` y `/register`).
+privada (todas excepto la landing `/`, `/login` y `/register`). Quien ya tiene
+sesión y entra a `/login` o `/register` va a `/inicio`; la landing `/` la ve
+cualquiera.
 
 ## Cómo funcionan los roles PLAYER y CLUB
 
@@ -262,3 +270,27 @@ En "Perfil", el club toca su escudo (ícono de cámara) para subirlo: JPG, PNG o
 A diferencia de la foto de un jugador, no se recorta: se achica entero (máx. 512 px) y conserva la
 transparencia si es PNG. Se guarda en el bucket `avatars` (carpeta del usuario) y la URL queda en
 `clubs.logo_url`. Los jugadores lo ven en su lista de chats y en cada conversación.
+
+## Landing
+
+La landing (`src/app/(landing)`) es siempre oscura y tiene estilos propios, acotados
+bajo la clase `.tt` en `landing.css` para no afectar a la demo. Usa las fuentes
+Big Shoulders Display, Hanken Grotesk y JetBrains Mono (`@fontsource`). Todos los
+accesos a la demo apuntan a la constante `DEMO_HREF` de `page.tsx` (`/inicio`).
+Los perfiles de ejemplo de la sección "Cómo funciona" son ilustrativos.
+
+## Lista de espera (validar interés)
+
+El formulario "Sumate a la lista" de la landing guarda nombre, email y contacto
+(WhatsApp o Instagram) en la tabla `waitlist` (migración `0006_waitlist.sql`). El botón
+principal de la landing es "Quiero mi cuenta"; la demo queda como acción secundaria.
+
+- **Ver los datos:** Supabase → Table Editor → `waitlist`. Para contar:
+  `select count(*) from public.waitlist;`
+- **Medir canales:** si compartís la landing como `https://tu-sitio/?src=instagram`,
+  cada alta guarda ese canal en `source`. Resumen:
+  `select source, count(*) from public.waitlist group by source order by 2 desc;`
+- **Privacidad:** la tabla no tiene política de lectura, así que la clave pública no puede
+  listarla. Un email repetido no se vuelve a guardar y la persona ve la misma confirmación
+  (así no se revela quién está en la lista). Hay un campo trampa contra bots; no hay límite
+  de frecuencia por IP, así que si ves spam, sumá uno (por ejemplo en el hosting).

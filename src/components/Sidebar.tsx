@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import type { UserRole } from "@/lib/types";
 
 const PLAYER_NAV = [
-  { href: "/", label: "Inicio" },
+  { href: "/inicio", label: "Inicio" },
   { href: "/news", label: "Noticias y eventos" },
   { href: "/profile", label: "Perfil" },
   { href: "/settings", label: "Configuración" },
@@ -17,7 +17,7 @@ const PLAYER_NAV = [
 
 /** El club no tiene "perfil de jugador": su Perfil reúne avisos y responsables. */
 const CLUB_NAV = [
-  { href: "/", label: "Inicio" },
+  { href: "/inicio", label: "Inicio" },
   { href: "/players", label: "Buscar jugadores" },
   { href: "/news", label: "Noticias y eventos" },
   { href: "/profile", label: "Perfil" },
@@ -35,7 +35,7 @@ export function Sidebar({ onNavigate, role }: { onNavigate?: () => void; role: U
       <ul className="flex flex-col gap-1">
         {items.map((item) => {
           const isActive =
-            item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            pathname.startsWith(item.href);
 
           return (
             <li key={item.href}>

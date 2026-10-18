@@ -90,7 +90,7 @@ export async function register(
   }
 
   if (data.session) {
-    redirect("/");
+    redirect("/inicio");
   }
 
   // El proyecto de Supabase tiene activada la confirmación por email.

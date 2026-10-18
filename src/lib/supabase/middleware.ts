@@ -2,10 +2,13 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_ROUTES = ["/login", "/register"];
+/** Landing pública: la ve cualquiera, con o sin sesión. */
+const LANDING_ROUTE = "/";
 
 /**
  * Refresca la sesión de Supabase en cada request y protege las rutas privadas.
- * Rutas privadas: todo excepto /login y /register.
+ * Rutas públicas: la landing (/), /login y /register. Todo lo demás
+ * (incluida la demo, que arranca en /inicio) requiere sesión.
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -40,6 +43,10 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith(route),
   );
 
+  if (pathname === LANDING_ROUTE) {
+    return supabaseResponse;
+  }
+
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
@@ -48,7 +55,7 @@ export async function updateSession(request: NextRequest) {
 
   if (user && isPublicRoute) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/inicio";
     return NextResponse.redirect(url);
   }
 

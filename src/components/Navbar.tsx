@@ -20,7 +20,7 @@ export function Navbar({ onMenuClick }: { onMenuClick: () => void }) {
           />
         </svg>
       </button>
-      <Link href="/" aria-label="TalenTree — Inicio" className="flex items-center">
+      <Link href="/inicio" aria-label="TalenTree — Inicio" className="flex items-center">
         <LogoMark size={32} />
       </Link>
     </header>
