@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = ["/login", "/register"];
+const PUBLIC_ROUTES = ["/login", "/register", "/solicitar-club"];
 /** Landing pública: la ve cualquiera, con o sin sesión. */
 const LANDING_ROUTE = "/";
 

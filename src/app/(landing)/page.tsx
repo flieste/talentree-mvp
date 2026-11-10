@@ -10,7 +10,6 @@ import "@fontsource/hanken-grotesk/600";
 import "@fontsource/jetbrains-mono/400";
 import "./landing.css";
 import { HowItWorks } from "./HowItWorks";
-import { WaitlistForm } from "./WaitlistForm";
 
 export const metadata: Metadata = {
   title: "TalenTree — Que te vean no es cuestión de suerte",
@@ -18,8 +17,8 @@ export const metadata: Metadata = {
     "TalenTree conecta jugadores con clubes y agentes. Perfiles con estadísticas validadas por IA y un buscador para encontrar talento fuera de las redes de siempre.",
 };
 
-/** Entrada a la demo: si no hay sesión, el middleware lleva a /login. */
-const DEMO_HREF = "/inicio";
+/** Botón "Unirme": página de inicio de sesión (desde ahí se llega al registro). */
+const JOIN_HREF = "/login";
 
 const MARQUEE = ["Visibilidad", "Datos validados", "Contacto directo"];
 
@@ -56,18 +55,7 @@ const WHO = [
   },
 ];
 
-/** Solo letras, números, guion y punto: el canal de origen (?src=...) se guarda en la lista. */
-function cleanSource(raw?: string) {
-  return raw && /^[a-z0-9_.-]{1,40}$/i.test(raw) ? raw.toLowerCase() : undefined;
-}
-
-export default async function LandingPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ src?: string }>;
-}) {
-  const source = cleanSource((await searchParams).src);
-
+export default function LandingPage() {
   // Cinta: cantidad par de repeticiones idénticas, así el bucle (-50%) es continuo.
   const loop = Array.from({ length: 8 }).flatMap(() =>
     MARQUEE.flatMap((w) => [w, "/"]),
@@ -93,12 +81,9 @@ export default async function LandingPage({
           <a href="#problema">El problema</a>
           <a href="#como">Cómo funciona</a>
           <a href="#para-quien">Para quién</a>
-          <Link href={DEMO_HREF} className="tt-btn tt-btn--ghost tt-btn--sm tt-hide-sm">
-            Ver la demo
+          <Link href={JOIN_HREF} className="tt-btn tt-btn--sm">
+            Unirme
           </Link>
-          <a href="#lista" className="tt-btn tt-btn--sm">
-            Sumarme
-          </a>
         </nav>
       </header>
 
@@ -122,11 +107,8 @@ export default async function LandingPage({
             fuera de las redes de siempre.
           </p>
           <div className="tt-row tt-rise r4">
-            <a href="#lista" className="tt-btn">
-              Quiero mi cuenta
-            </a>
-            <Link href={DEMO_HREF} className="tt-btn tt-btn--ghost">
-              Probar la demo
+            <Link href={JOIN_HREF} className="tt-btn">
+              Unirme
             </Link>
           </div>
         </div>
@@ -204,31 +186,6 @@ export default async function LandingPage({
         </div>
       </div>
 
-      {/* LISTA DE ESPERA */}
-      <section id="lista" className="tt-wrap tt-signup">
-        <div className="tt-signup__copy">
-          <div className="tt-eyebrow tt-mono">Lista de espera</div>
-          <h2 className="tt-h2">
-            Tu perfil <span className="tt-accent">te espera.</span>
-          </h2>
-          <p className="tt-lead">
-            Estamos viendo cuántos jugadores quieren tener su perfil en
-            TalenTree. Dejanos tus datos y te avisamos apenas abramos las
-            cuentas.
-          </p>
-          <p className="tt-signup__alt">
-            ¿Querés ver cómo funciona antes?{" "}
-            <Link href={DEMO_HREF} className="tt-signup__link">
-              Probá la demo
-            </Link>
-            .
-          </p>
-        </div>
-        <div className="tt-signup__card">
-          <WaitlistForm source={source} />
-        </div>
-      </section>
-
       {/* PROBLEMA */}
       <section id="problema" className="tt-wrap tt-section tt-problem">
         <div className="tt-head">
@@ -269,11 +226,8 @@ export default async function LandingPage({
         </div>
         <HowItWorks />
         <div className="tt-row">
-          <a href="#lista" className="tt-btn">
-            Quiero mi cuenta
-          </a>
-          <Link href={DEMO_HREF} className="tt-btn tt-btn--ghost">
-            Probar la demo
+          <Link href={JOIN_HREF} className="tt-btn">
+            Unirme
           </Link>
         </div>
       </section>
@@ -307,15 +261,12 @@ export default async function LandingPage({
           <span className="tt-accent">se encuentre.</span>
         </h2>
         <p className="tt-lead">
-          Estamos armando TalenTree en el AMBA. Dejanos tus datos y sé de los
+          Estamos armando TalenTree en el AMBA. Creá tu cuenta y sé de los
           primeros en tener tu perfil.
         </p>
         <div className="tt-row">
-          <a href="#lista" className="tt-btn">
-            Quiero mi cuenta
-          </a>
-          <Link href={DEMO_HREF} className="tt-btn tt-btn--ghost">
-            Entrar a la demo
+          <Link href={JOIN_HREF} className="tt-btn">
+            Unirme
           </Link>
         </div>
       </section>

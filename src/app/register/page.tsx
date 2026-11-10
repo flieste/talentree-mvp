@@ -13,6 +13,11 @@ export default function RegisterPage() {
           <Link href="/login" className="font-medium text-accent hover:underline">
             Ya tengo una cuenta
           </Link>
+          <br />
+          ¿Sos un club?{" "}
+          <Link href="/solicitar-club" className="font-medium text-accent hover:underline">
+            Solicitar cuenta de club
+</Link>
         </span>
       }
     >

@@ -19,6 +19,11 @@ export default async function LoginPage({
           <Link href="/register" className="font-medium text-accent hover:underline">
             Crear cuenta
           </Link>
+          <br />
+          ¿Sos un club?{" "}
+          <Link href="/solicitar-club" className="font-medium text-accent hover:underline">
+            Solicitar cuenta de club
+</Link>
         </span>
       }
     >
