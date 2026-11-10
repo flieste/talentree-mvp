@@ -7,9 +7,9 @@ preparada desde el modelo de datos hasta los permisos para incorporar, en
 próximas etapas, cuentas de **club** que puedan buscar jugadores y
 contactarlos por chat.
 
-Este MVP implementa **completamente el flujo del jugador**. El rol CLUB
-existe a nivel de base de datos y autorización, pero todavía no tiene
-interfaz.
+Este MVP implementa el flujo del **jugador** y el del **club** (búsqueda de
+jugadores, chat, avisos y responsables). Las cuentas de club no se crean desde
+el registro: los clubes las piden en `/solicitar-club` y el equipo las crea a mano.
 
 ## Tecnologías
 
@@ -49,6 +49,7 @@ talentree/
 │   ├── migrations/0003_avatars.sql  # Bucket de fotos de perfil
 │   ├── migrations/0004_club_features.sql  # Club: responsables, avisos, calificación, chat
 │   ├── migrations/0005_security_hardening.sql  # Auditoría de seguridad: cierre de agujeros de RLS
+│   ├── migrations/0007_club_requests.sql  # Solicitudes de cuenta de club
 │   └── seed.sql                  # 10 jugadores ficticios de demo
 └── public/logo.png              # Logo oficial de TalenTree
 ```
@@ -94,7 +95,9 @@ En el panel de Supabase, andá a **SQL Editor** y ejecutá, en este orden:
 6. El contenido de `supabase/migrations/0006_waitlist.sql` (tabla `waitlist` para la
    lista de espera de la landing; solo permite insertar, nadie puede leerla desde la
    app).
-7. El contenido de `supabase/seed.sql` (carga los 10 jugadores demo para
+7. El contenido de `supabase/migrations/0007_club_requests.sql` (tabla `club_requests`: solicitudes de
+   cuenta de club; solo permite insertar, se leen desde el panel de Supabase).
+8. El contenido de `supabase/seed.sql` (carga los 10 jugadores demo para
    que el Home no se vea vacío).
 
 ### Seguridad
