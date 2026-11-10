@@ -10,6 +10,7 @@ export default async function MyProfilePage() {
   if (!user) redirect("/login");
 
   const role = await getRole();
+  if (role === "admin") redirect("/admin");
 
   if (role === "club") {
     const club = await getCurrentClub();

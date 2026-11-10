@@ -26,16 +26,26 @@ const CLUB_NAV = [
   { href: "/help", label: "Ayuda" },
 ] as const;
 
+/** Panel del equipo de TalenTree. */
+const ADMIN_NAV = [
+  { href: "/admin", label: "Panel" },
+  { href: "/admin/solicitudes", label: "Solicitudes de clubes" },
+  { href: "/admin/avisos", label: "Avisos de clubes" },
+  { href: "/admin/noticias", label: "Noticias y eventos" },
+  { href: "/settings", label: "Configuración" },
+  { href: "/help", label: "Ayuda" },
+] as const;
+
 export function Sidebar({ onNavigate, role }: { onNavigate?: () => void; role: UserRole }) {
   const pathname = usePathname();
-  const items = role === "club" ? CLUB_NAV : PLAYER_NAV;
+  const items = role === "admin" ? ADMIN_NAV : role === "club" ? CLUB_NAV : PLAYER_NAV;
 
   return (
     <nav className="flex h-full flex-col justify-between p-4">
       <ul className="flex flex-col gap-1">
         {items.map((item) => {
           const isActive =
-            pathname.startsWith(item.href);
+            item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
 
           return (
             <li key={item.href}>

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getRole } from "@/lib/data/auth";
 import { getAllPlayers } from "@/lib/data/players";
 import { getHomeNews } from "@/lib/data/news";
@@ -10,7 +11,9 @@ import { EmptyState } from "@/components/ui/EmptyState";
 export default async function HomePage() {
   // Los jugadores no ven "Descubrí nuevos talentos": solo gestionan su perfil.
   // La grilla de jugadores es para los clubes.
-  const isClub = (await getRole()) === "club";
+  const role = await getRole();
+  if (role === "admin") redirect("/admin");
+  const isClub = role === "club";
   const [players, news] = await Promise.all([
     isClub ? getAllPlayers() : Promise.resolve([]),
     getHomeNews(HOME_NEWS_LIMIT),

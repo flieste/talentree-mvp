@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { HighlightVideo } from "@/lib/types";
-import { isSafeHttpUrl, toEmbedUrl } from "@/lib/utils";
+import { isDriveUrl, isSafeHttpUrl, toEmbedUrl } from "@/lib/utils";
 
 interface VideoCardProps {
   video: HighlightVideo;
@@ -52,7 +52,20 @@ export function VideoCard({ video, actions }: VideoCardProps) {
       </div>
       <div className="flex items-center justify-between gap-2 p-3">
         <p className="truncate text-sm font-medium text-text">{video.title}</p>
-        {actions}
+        <div className="flex shrink-0 items-center gap-2">
+          {/* Si el archivo de Drive no está compartido, el preview no carga: queda el link directo. */}
+          {safeUrl && isDriveUrl(safeUrl) && (
+            <a
+              href={safeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-medium text-accent-strong hover:underline"
+            >
+              Abrir en Drive
+            </a>
+          )}
+          {actions}
+        </div>
       </div>
     </div>
   );

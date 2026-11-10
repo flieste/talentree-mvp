@@ -97,7 +97,10 @@ En el panel de Supabase, andá a **SQL Editor** y ejecutá, en este orden:
    app).
 7. El contenido de `supabase/migrations/0007_club_requests.sql` (tabla `club_requests`: solicitudes de
    cuenta de club; solo permite insertar, se leen desde el panel de Supabase).
-8. El contenido de `supabase/seed.sql` (carga los 10 jugadores demo para
+8. El contenido de `supabase/migrations/0008_admin_panel.sql` (panel de TalenTree: lista de mails
+   autorizados, permisos de administración y alta de cuentas de club; después autorizá tu mail, ver
+   "Panel de TalenTree").
+9. El contenido de `supabase/seed.sql` (carga los 10 jugadores demo para
    que el Home no se vea vacío).
 
 ### Seguridad
@@ -232,11 +235,16 @@ fecha); `/news` las muestra todas.
 
 ## Videos: link o archivo
 
-En "Agregar video" el jugador elige entre pegar un link de YouTube/Vimeo o
-subir un archivo (MP4, MOV o WebM). Los archivos van al bucket `highlight-videos`
+En "Agregar video" el jugador elige entre pegar un link de YouTube, Vimeo o
+**Google Drive**, o subir un archivo (MP4, MOV o WebM). Los archivos van al bucket `highlight-videos`
 de Supabase Storage, en una carpeta con el id del usuario. El límite es 50 MB
 por archivo (tope del plan gratuito de Supabase); en un plan pago se puede subir
 `MAX_VIDEO_FILE_MB` en `src/lib/constants.ts` y `file_size_limit` en la migración.
+
+**Google Drive:** se aceptan links de archivo (`drive.google.com/file/d/<id>/view`, `open?id=` o `uc?id=`);
+se muestran embebidos con el reproductor de Drive y un link "Abrir en Drive". El archivo tiene que estar
+compartido como "Cualquier persona con el vínculo", si no el club no lo va a poder ver. Los links de
+carpetas se rechazan (no se pueden reproducir).
 
 El panel del Inicio es un carrusel: una noticia por slide (máximo `HOME_NEWS_LIMIT` = 4),
 con flechas laterales al pasar el cursor y puntos indicadores arriba a la derecha.
@@ -264,8 +272,7 @@ avisos para TalenTree y responsables de la cuenta) y **Chat**.
   no pueden modificarla; se carga desde el Table Editor o el SQL Editor.
 - **Chat:** el club toca "Contactar" en el perfil de un jugador y se abre una conversación (una por par
   club-jugador). Los mensajes llegan en tiempo real (Supabase Realtime).
-- **Crear cuentas de club:** por ahora se crean a mano desde Supabase → Authentication, con
-  `role: club` y `club_name` en los metadatos del usuario.
+- **Crear cuentas de club:** desde el panel de TalenTree (ver más abajo), aprobando la solicitud.
 
 ### Escudo del club
 
@@ -297,3 +304,28 @@ principal de la landing es "Quiero mi cuenta"; la demo queda como acción secund
   listarla. Un email repetido no se vuelve a guardar y la persona ve la misma confirmación
   (así no se revela quién está en la lista). Hay un campo trampa contra bots; no hay límite
   de frecuencia por IP, así que si ves spam, sumá uno (por ejemplo en el hosting).
+
+
+## Panel de TalenTree (administración)
+
+Cuenta del equipo para gestionar la app. Menú propio: **Panel**, **Solicitudes de clubes**,
+**Avisos de clubes**, **Noticias y eventos**, Configuración y Ayuda.
+
+- **Acceso:** solo mails autorizados. La lista vive en la tabla `admin_emails` (migración
+  `0008_admin_panel.sql`) y la verifica la base con `is_talentree_admin()`: el mail tiene que estar en la lista
+  **y confirmado** en Supabase Auth. No hay forma de autorizarse desde la app. Todas las rutas `/admin/*` y todas
+  las acciones comprueban esto del lado del servidor.
+- **Autorizar un mail** (SQL Editor): `insert into public.admin_emails (email) values ('tu-mail@ejemplo.com');`
+  Revocar: `delete from public.admin_emails where email = 'tu-mail@ejemplo.com';`
+- **Solicitudes de clubes:** "Aprobar y crear cuenta" crea el usuario con rol club (rol en `app_metadata`, que solo
+  escribe la service role), carga al contacto como primer responsable y genera un link de un solo uso para que el
+  club elija su contraseña (`/auth/confirm` → `/actualizar-clave`). El link se muestra en el panel para
+  enviárselo al club; si vence, "Generar link de acceso". Requiere `SUPABASE_SERVICE_ROLE_KEY` (solo servidor).
+- **Avisos de clubes:** "Publicar en noticias" crea la noticia y marca el aviso `publicado`; "No publicar" deja una
+  nota para el club; se puede volver a revisión.
+- **Noticias y eventos propios:** crear, editar y eliminar (lo que ve todo el mundo en Inicio y Noticias).
+- **IMPORTANTE antes de lanzar:** activá "Confirm email" en Supabase → Authentication → Providers → Email.
+  Con la confirmación desactivada (el paso 4 de arriba, pensado solo para probar) cualquiera podría registrarse
+  con un mail de `admin_emails` que todavía no tenga cuenta y quedar autorizado. Creá primero tu cuenta de admin
+  o dejá la confirmación activa.
+- **Variables de entorno en Vercel:** `SUPABASE_SERVICE_ROLE_KEY` (secreta) y, opcional, `NEXT_PUBLIC_SITE_URL`.

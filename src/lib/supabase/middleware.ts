@@ -43,7 +43,8 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith(route),
   );
 
-  if (pathname === LANDING_ROUTE) {
+  // La landing y el canje de links de acceso los puede abrir cualquiera, con o sin sesión.
+  if (pathname === LANDING_ROUTE || pathname.startsWith("/auth/confirm")) {
     return supabaseResponse;
   }
 

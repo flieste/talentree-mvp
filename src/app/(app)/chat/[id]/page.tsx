@@ -14,6 +14,7 @@ export default async function ChatConversationPage({
   const { id } = await params;
   const [user, role] = await Promise.all([getCurrentUser(), getRole()]);
   if (!user || !role) redirect("/login");
+  if (role === "admin") redirect("/admin");
 
   // RLS: si la conversación no es del usuario, no aparece y da 404.
   const conversation = await getConversation(id, role);

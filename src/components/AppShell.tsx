@@ -10,7 +10,7 @@ export function AppShell({ children, role }: { children: ReactNode; role: UserRo
 
   return (
     <div className="min-h-screen bg-bg">
-      <Navbar onMenuClick={() => setMobileOpen(true)} />
+      <Navbar onMenuClick={() => setMobileOpen(true)} homeHref={role === "admin" ? "/admin" : "/inicio"} />
 
       <div className="mx-auto flex max-w-6xl">
         {/* Sidebar de escritorio */}

@@ -5,9 +5,9 @@ import { LoginForm } from "@/components/LoginForm";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ registered?: string }>;
+  searchParams: Promise<{ registered?: string; link?: string }>;
 }) {
-  const { registered } = await searchParams;
+  const { registered, link } = await searchParams;
 
   return (
     <AuthForm
@@ -27,6 +27,11 @@ export default async function LoginPage({
         </span>
       }
     >
+      {link === "vencido" && (
+        <p role="alert" className="mb-4 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+          Ese link venció o ya se usó. Pedile uno nuevo a TalenTree.
+        </p>
+      )}
       {registered && (
         <p className="mb-4 rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-sm text-accent-strong">
           Cuenta creada. Revisá tu email para confirmarla y después iniciá sesión.

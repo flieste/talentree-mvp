@@ -56,6 +56,7 @@ const VIDEO_HOST_ALLOWLIST = [
   "vimeo.com",
   "www.vimeo.com",
   "player.vimeo.com",
+  "drive.google.com",
 ];
 
 /**
@@ -95,7 +96,37 @@ export function isSafeHttpUrl(value: string | null | undefined): boolean {
 }
 
 /**
- * Convierte una URL de YouTube o Vimeo en una URL de embed apta para <iframe>.
+ * Extrae el id de archivo de un link de Google Drive. Acepta:
+ *   drive.google.com/file/d/<id>/view | /preview
+ *   drive.google.com/open?id=<id>  y  drive.google.com/uc?id=<id>
+ * Devuelve null para carpetas u otros links que no se pueden reproducir.
+ */
+export function getDriveFileId(rawUrl: string): string | null {
+  try {
+    const url = new URL(rawUrl);
+    if (url.hostname !== "drive.google.com") return null;
+    const fromPath = url.pathname.match(/^\/file\/d\/([\w-]+)/);
+    if (fromPath) return fromPath[1];
+    if (url.pathname === "/open" || url.pathname === "/uc") {
+      const id = url.searchParams.get("id");
+      if (id && /^[\w-]+$/.test(id)) return id;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function isDriveUrl(rawUrl: string): boolean {
+  try {
+    return new URL(rawUrl).hostname === "drive.google.com";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Convierte una URL de YouTube, Vimeo o Google Drive en una URL de embed apta para <iframe>.
  * Si no reconoce el formato, devuelve null y el video se muestra como link.
  */
 export function toEmbedUrl(rawUrl: string): string | null {
@@ -112,6 +143,11 @@ export function toEmbedUrl(rawUrl: string): string | null {
       if (id) return `https://www.youtube.com/embed/${id}`;
       if (url.pathname.startsWith("/embed/")) return url.toString();
       return null;
+    }
+
+    if (url.hostname === "drive.google.com") {
+      const id = getDriveFileId(rawUrl);
+      return id ? `https://drive.google.com/file/d/${id}/preview` : null;
     }
 
     if (url.hostname.endsWith("vimeo.com")) {

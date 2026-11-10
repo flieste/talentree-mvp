@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { LogoMark } from "@/components/LogoMark";
 
-export function Navbar({ onMenuClick }: { onMenuClick: () => void }) {
+export function Navbar({ onMenuClick, homeHref = "/inicio" }: { onMenuClick: () => void; homeHref?: string }) {
   return (
     <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur">
       <button
@@ -20,7 +20,7 @@ export function Navbar({ onMenuClick }: { onMenuClick: () => void }) {
           />
         </svg>
       </button>
-      <Link href="/inicio" aria-label="TalenTree — Inicio" className="flex items-center">
+      <Link href={homeHref} aria-label="TalenTree — Inicio" className="flex items-center">
         <LogoMark size={32} />
       </Link>
     </header>

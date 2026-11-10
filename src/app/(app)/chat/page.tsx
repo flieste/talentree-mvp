@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getRole } from "@/lib/data/auth";
 import { getConversations } from "@/lib/data/chat";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -8,6 +9,7 @@ export const metadata = { title: "Chat — TalenTree" };
 
 export default async function ChatPage() {
   const role = (await getRole()) ?? "player";
+  if (role === "admin") redirect("/admin");
   const conversations = await getConversations(role);
 
   return (

@@ -216,7 +216,7 @@ export function HighlightsManager({
                   name="url"
                   type="url"
                   placeholder="https://www.youtube.com/watch?v=..."
-                  hint="Youtube o Vimeo."
+                  hint={"YouTube, Vimeo o Google Drive. En Drive, compartí el video con \"Cualquier persona con el vínculo\" para que los clubes puedan verlo."}
                   required
                 />
               ) : (

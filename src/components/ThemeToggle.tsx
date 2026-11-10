@@ -23,23 +23,29 @@ export function ThemeToggle() {
         </p>
       </div>
       <button
+        type="button"
         role="switch"
         aria-checked={isDark}
         aria-label="Cambiar tema"
         disabled={!mounted}
         onClick={() => setTheme(isDark ? "light" : "dark")}
         className={cn(
-          "relative h-7 w-13 shrink-0 rounded-full border border-border transition-colors",
+          "relative shrink-0 rounded-full border border-border p-0 transition-colors",
           isDark ? "bg-accent" : "bg-bg-subtle",
         )}
-        style={{ width: "3.25rem" }}
+        style={{ width: 52, height: 28 }}
       >
+        {/* Medidas fijas en px: la bolita (22px) queda a 2px del borde en ambos extremos. */}
         <span
-          className={cn(
-            "absolute top-0.5 h-5.5 w-5.5 rounded-full bg-white shadow transition-transform",
-            isDark ? "translate-x-6" : "translate-x-0.5",
-          )}
-          style={{ height: "1.375rem", width: "1.375rem" }}
+          aria-hidden="true"
+          className="absolute rounded-full bg-white shadow transition-transform"
+          style={{
+            top: 2,
+            left: 2,
+            width: 22,
+            height: 22,
+            transform: isDark ? "translateX(24px)" : "translateX(0)",
+          }}
         />
       </button>
     </div>

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { isValidVideoUrl } from "@/lib/utils";
+import { getDriveFileId, isDriveUrl, isValidVideoUrl } from "@/lib/utils";
 import { AVATAR_BUCKET, VIDEO_BUCKET } from "@/lib/constants";
 import { storagePathFromUrl } from "@/lib/storage";
 import type { PlayerPosition } from "@/lib/types";
@@ -173,7 +173,14 @@ export async function addHighlightVideo(
 
   if (!title) return { error: "El título es obligatorio." };
   if (!isValidVideoUrl(url)) {
-    return { error: "Ingresá una URL válida de YouTube o Vimeo." };
+    return { error: "Ingresá un link válido de YouTube, Vimeo o Google Drive." };
+  }
+  // Drive: tiene que ser un archivo (no una carpeta), para poder mostrarlo.
+  if (isDriveUrl(url) && !getDriveFileId(url)) {
+    return {
+      error:
+        "Ese link de Drive no es de un archivo. Abrí el video en Drive, tocá Compartir y copiá el link del archivo (no el de una carpeta).",
+    };
   }
 
   const supabase = await createClient();

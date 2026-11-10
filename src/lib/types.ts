@@ -1,4 +1,4 @@
-export type UserRole = "player" | "club";
+export type UserRole = "player" | "club" | "admin";
 
 export type PlayerPosition =
   | "arquero"
